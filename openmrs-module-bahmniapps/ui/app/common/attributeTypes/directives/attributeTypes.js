@@ -41,9 +41,12 @@ angular.module('bahmni.common.attributeTypes', []).directive('attributeTypes', [
                 var linkedurl = "https://imis.hib.gov.np/InsureeProfile.aspx?nshid=" + nhisNumber;
                 document.getElementById("linktoHMIS").href = linkedurl;
                 document.getElementById("hibEligibilityDialog").classList.toggle("hideDialogEl");
-                var url = "https://192.168.56.101:4433/insurance/Eligibility.php?identifier=" + nhisNumber;
+                var baseUrl = window.location.origin + ":4433";
+                console.log("Base url", baseUrl);
+                var url = baseUrl + "/insurance/Eligibility.php?identifier=" + nhisNumber;
                 $http.get(url).then(function (response) {
                     var data = response.data;
+                    console.log("Data", data);
                     var patientInfo = JSON.parse(data.info);
                     console.log("Patient Information", patientInfo);
                     var eligibility = JSON.parse(data.eligibility);
@@ -105,19 +108,20 @@ angular.module('bahmni.common.attributeTypes', []).directive('attributeTypes', [
                     document.getElementById("hibUsed-med").innerHTML = usedMoneyMed;
                     document.getElementById("hibUsed-opd").innerHTML = usedMoneyOpd;
                     document.getElementById("hibCopayment").innerHTML = isCopayment;
-                    if (totalMoneyMed - usedMoneyMed > 50 || totalMoneyOpd - usedMoneyOpd > 50) {
-                        document.getElementById("Is NHIS Active").checked = true;
-                    }
-                    else {
-                        document.getElementById("Is NHIS Active").checked = false;
-                    }
+                    // if (totalMoneyMed - usedMoneyMed > 50 || totalMoneyOpd - usedMoneyOpd > 50) {
+                    //     document.getElementById("Is NHIS Active").checked = true;
+                    // }
+                    // else {
+                    //     document.getElementById("Is NHIS Active").checked = false;
+                    // }
                 }).catch(function (error) {
                     alert("" + error.status);
                 });
             };
             $scope.generateClaimCode = function () {
                 console.log("Generate Claim Code");
-                var url = "https://192.168.56.101:4433/insurance/getClaimCode.php";
+                var baseUrl = window.location.origin + ":4433";
+                var url = baseUrl + "/insurance/getClaimCode.php";
                 $http.get(url).then(function (response) {
                     var claimCode = response.data;
                     console.log("Claim Code", claimCode);
@@ -128,7 +132,8 @@ angular.module('bahmni.common.attributeTypes', []).directive('attributeTypes', [
             };
             $scope.generateIpdNumber = function () {
                 console.log("Generate Ipd Number");
-                var url = "https://192.168.56.101:4433/insurance/getIpdNumber.php";
+                var baseUrl = window.location.origin + ":4433";
+                var url = baseUrl + "/insurance/getIpdNumber.php";
                 $http.get(url).then(function (response) {
                     var ipdNumber = response.data;
                     console.log("IPD Number", ipdNumber);
