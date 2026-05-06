@@ -54,9 +54,10 @@ angular.module('bahmni.common.attributeTypes', []).directive('attributeTypes', [
                         console.log("Eligibility", eligibility);
                         var firstName = patientInfo.entry[0].resource.name[0].given[0];
                         var middleName = "";
-                        if (firstName.split(" ").length > 1) {
-                            firstName = firstName.split(" ")[0];
-                            middleName = firstName.split(" ")[1];
+                        if (firstName) {
+                            const parts = firstName.trim().split(/\s+/);
+                            firstName = parts[0] || "";
+                            middleName = parts[1] || "";
                         }
                         var imageUrl = eligibility.extension[0].valueString;
                         var familyName = patientInfo.entry[0].resource.name[0].family;
@@ -109,12 +110,14 @@ angular.module('bahmni.common.attributeTypes', []).directive('attributeTypes', [
                         document.getElementById("hibUsed-med").innerHTML = usedMoneyMed;
                         document.getElementById("hibUsed-opd").innerHTML = usedMoneyOpd;
                         document.getElementById("hibCopayment").innerHTML = isCopayment;
-                        // if (totalMoneyMed - usedMoneyMed > 50 || totalMoneyOpd - usedMoneyOpd > 50) {
-                        //     document.getElementById("Is NHIS Active").checked = true;
-                        // }
-                        // else {
-                        //     document.getElementById("Is NHIS Active").checked = false;
-                        // }
+                        if (totalMoneyMed - usedMoneyMed || totalMoneyOpd - usedMoneyOpd > 50) {
+                            document.getElementById("NHIS Member Active").checked = true;
+                            $scope.targetModel["NHIS Member Active"] = true;
+                        }
+                        else {
+                            document.getElementById("NHIS Member Active").checked = false;
+                            $scope.targetModel["NHIS Member Active"] = false;
+                        }
                     }).catch(function (error) {
                         alert("" + error.status);
                     });
@@ -134,6 +137,7 @@ angular.module('bahmni.common.attributeTypes', []).directive('attributeTypes', [
                         if (this.status == 200) {
                             var claimCode = this.responseText;
                             document.getElementById("Claim Code").value = claimCode;
+                            $scope.targetModel["Claim Code"] = claimCode;
                         }
                     };
                     xmlhttp.send();
@@ -153,6 +157,7 @@ angular.module('bahmni.common.attributeTypes', []).directive('attributeTypes', [
                         if (this.status == 200) {
                             var ipdNumber = this.responseText;
                             document.getElementById("IPD Number").value = ipdNumber;
+                            $scope.targetModel["IPD Number"] = ipdNumber;
                         }
                     };
                     xmlhttp.send();
